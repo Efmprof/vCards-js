@@ -1,6 +1,6 @@
 /********************************************************************************
-    vCards-js, Eric J Nesser, November 2014
-********************************************************************************/
+ vCards-js, Eric J Nesser, November 2014
+ ********************************************************************************/
 /*jslint node: true */
 'use strict';
 
@@ -22,30 +22,18 @@ var vCard = (function () {
              * @param  {string} url       URL where photo can be found
              * @param  {string} mediaType Media type of photo (JPEG, PNG, GIF)
              */
-            attachFromUrl: function(url, mediaType) {
+            attachFromUrl: function (url, mediaType) {
                 this.url = url;
                 this.mediaType = mediaType;
                 this.base64 = false;
             },
 
             /**
-             * Embed a photo from a file using base-64 encoding (not implemented yet)
-             * @param  {string} filename
-             */
-            embedFromFile: function(fileLocation) {
-                var fs = require('fs');
-                var path = require('path');
-                this.mediaType = path.extname(fileLocation).toUpperCase().replace(/\./g, "");
-                var imgData = fs.readFileSync(fileLocation);
-                this.url = imgData.toString('base64');
-                this.base64 = true;
-            },
-
-            /**
              * Embed a photo from a base-64 string
              * @param  {string} base64String
+             * @param {string} mediaType
              */
-            embedFromString: function(base64String, mediaType) {
+            embedFromString: function (base64String, mediaType) {
                 this.mediaType = mediaType;
                 this.url = base64String;
                 this.base64 = true;
@@ -96,18 +84,6 @@ var vCard = (function () {
         };
     }
 
-    /**
-     * Get social media URLs
-     * @return {object} Social media URL hash group
-     */
-    function getSocialUrls() {
-        return {
-            'facebook': '',
-            'linkedIn': '',
-            'twitter': '',
-            'flickr': ''
-        };
-    }
 
     /********************************************************************************
      * Public interface for vCard
@@ -122,7 +98,7 @@ var vCard = (function () {
 
         /**
          * Date of birth
-         * @type {Datetime}
+         * @type {Date}
          */
         birthday: '',
 
@@ -246,17 +222,12 @@ var vCard = (function () {
          */
         role: '',
 
-        /**
-         * Social URLs attached to the vCard object (ex: Facebook, Twitter, LinkedIn)
-         * @type {String}
-         */
-        socialUrls: getSocialUrls(),
 
         /**
-         * Custom social URLs attached to the vCard object (ex: Facebook, Twitter, LinkedIn)
-         * @type {Array<String>}
+         * Custom URLs attached to the vCard object [{name: title, link: url}]
+         * @type {Array<Dict<String, String>>}
          */
-        customSocialUrls: [],
+        namedUrl: [],
 
         /**
          * A URL that can be used to get the latest version of this vCard
@@ -276,17 +247,6 @@ var vCard = (function () {
          */
         url: '',
 
-        /**
-         * URL pointing to a custom url that represents the person in some way
-         * @type {Array<String>}
-         */
-        iosURL: [],
-
-        /**
-         * URL pointing to a url custom label that represents the person in some way
-         * @type {Array<String>}
-         */
-        label: [],
 
         /**
          * URL pointing to a website that represents the person's work in some way
@@ -313,6 +273,12 @@ var vCard = (function () {
         workFax: '',
 
         /**
+         * It makes the item sort and display as primarily the organization, secondarily the person.
+         * @type {Boolean}
+         */
+        isOrganization: false,
+
+        /**
          * vCard version
          * @type {String}
          */
@@ -320,10 +286,10 @@ var vCard = (function () {
 
         /**
          * Get major version of the vCard format
-         * @return {integer}
+         * @return {Integer}
          */
-        getMajorVersion: function() {
-            var majorVersionString = this.version ? this.version.split('.')[0] : '4';
+        getMajorVersion: function () {
+            const majorVersionString = this.version ? this.version.split('.')[0] : '4';
             if (!isNaN(majorVersionString)) {
                 return parseInt(majorVersionString);
             }
@@ -334,23 +300,23 @@ var vCard = (function () {
          * Get formatted vCard
          * @return {String} Formatted vCard in VCF format
          */
-        getFormattedString: function() {
-            var vCardFormatter = require('./lib/vCardFormatter');
+        getFormattedString: function () {
+            const vCardFormatter = require('./lib/vCardFormatter');
             return vCardFormatter.getFormattedString(this);
         },
 
-        /**
-         * Save formatted vCard to file
-         * @param  {String} filename
-         */
-        saveToFile: function(filename) {
-            var vCardFormatter = require('./lib/vCardFormatter');
-            var contents = vCardFormatter.getFormattedString(this);
-
-            var fs = require('fs');
-            fs.writeFileSync(filename, contents, { encoding: 'binary'});
-            //fs.writeFileSync(filename, contents, { encoding: 'utf8' });
-        }
+        // /**
+        //  * Save formatted vCard to file
+        //  * @param  {String} filename
+        //  */
+        // saveToFile: function(filename) {
+        //     var vCardFormatter = require('./lib/vCardFormatter');
+        //     var contents = vCardFormatter.getFormattedString(this);
+        //
+        //     var fs = require('fs');
+        //     fs.writeFileSync(filename, contents, { encoding: 'binary'});
+        //     //fs.writeFileSync(filename, contents, { encoding: 'utf8' });
+        // }
     };
 });
 
