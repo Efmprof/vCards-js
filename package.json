@@ -17,6 +17,10 @@
     "type": "git",
     "url": "https://github.com/enesser/vCards-js.git"
   },
+  "browser": {
+    "fs": false,
+    "path": false
+  },
   "keywords": [
     "vCard",
     "vCards",
